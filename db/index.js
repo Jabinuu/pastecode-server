@@ -1,10 +1,10 @@
 const mysql = require("mysql");
 const pool = mysql.createPool({
-  host: "sh-cynosdbmysql-grp-oonk715e.sql.tencentcdb.com",
+  host: "sh-cynosdbmysql-grp-p7pgfvyu.sql.tencentcdb.com",
   user: "root",
-  password: "JIAbin0123",
+  password: "JIAbin123",
   database: "pastecode",
-  port: 20102,
+  port: 21066,
 });
 
 // const pool = mysql.createPool({
@@ -18,8 +18,6 @@ let query = function (sql, values) {
   return new Promise((resolve, reject) => {
     pool.getConnection(function (err, connection) {
       if (err) {
-        console.log(111);
-
         reject(err);
       } else {
         connection.query(sql, values, (err, rows) => {

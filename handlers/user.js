@@ -1,7 +1,7 @@
 const { query } = require("../db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { secretKey } = require("../config.default");
+const { secretKey, refreshTokenKey } = require("../config.default");
 const {
   userLoginFail,
   changePasswordFail,
@@ -71,12 +71,44 @@ exports.userLogin = async (ctx) => {
       code: 100,
       msg: "登录成功!",
       data: {
-        token: jwt.sign(res, secretKey, { expiresIn: 60 * 60 * 48 }), //数字单位为 秒
+        token: jwt.sign(res, secretKey, { expiresIn: 10 }), //数字单位为 秒
+        refreshToken: jwt.sign({ token: "myrefreshToken" }, refreshTokenKey, {
+          expiresIn: 60 * 60 * 24,
+        }),
       },
     };
   } catch (e) {
     console.error(e);
     ctx.app.emit("error", userLoginFail, ctx);
+  }
+};
+
+/**
+ *
+ * @param {*} ctx
+ * @returns null
+ * @description 更新短效token
+ * @author jiabin
+ */
+exports.updateToken = async (ctx) => {
+  const { username } = ctx.request.body;
+  try {
+    const [temp] = changeResKey(
+      await query(`select * from user where username='${username}'`)
+    );
+    const res = {
+      username: temp.username,
+      id: temp.id,
+    };
+    ctx.body = {
+      code: 100,
+      msg: "token已更新!",
+      data: {
+        token: jwt.sign(res, secretKey, { expiresIn: 10 }), //数字单位为 秒
+      },
+    };
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -123,6 +155,7 @@ exports.sendUserInfo = async (ctx) => {
       msg: "success!",
       data: res,
     };
+    console.log(res);
   } catch (e) {
     console.error(e);
     ctx.app.emit("error", getUserInfoFail, ctx);

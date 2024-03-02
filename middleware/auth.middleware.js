@@ -1,5 +1,8 @@
-const { tokenExpirationOver } = require("../constant/err.type");
-const { secretKey } = require("../config.default");
+const {
+  tokenExpirationOver,
+  refreshTokenExpOver,
+} = require("../constant/err.type");
+const { secretKey, refreshTokenKey } = require("../config.default");
 const jwt = require("jsonwebtoken");
 /**
  *
@@ -19,6 +22,24 @@ exports.auth = async (ctx, next) => {
   } catch (e) {
     console.error(e);
     return ctx.app.emit("error", tokenExpirationOver, ctx);
+  }
+  await next();
+};
+
+/**
+ * @param {*} ctx
+ * @param {*} next
+ * @returns null
+ * @description 验证刷新token的有效性
+ * @author jiabin
+ */
+exports.authRefreshToken = async (ctx, next) => {
+  const { __authorization } = ctx.request.header;
+  try {
+    jwt.verify(__authorization, refreshTokenKey);
+  } catch (e) {
+    console.error(e);
+    return ctx.app.emit("error", refreshTokenExpOver, ctx);
   }
   await next();
 };

@@ -134,4 +134,9 @@ module.exports = {
     msg: "访问密码错误!",
     data: {},
   },
+  refreshTokenExpOver: {
+    code: "100028",
+    msg: "刷新token过期!",
+    data: {},
+  },
 };

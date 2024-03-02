@@ -6,6 +6,7 @@ const {
   sendUserInfo,
   changeProfile,
   userInfoById,
+  updateToken,
 } = require("../handlers/user");
 const {
   encryptPassword,
@@ -14,7 +15,7 @@ const {
   verifyRegister,
 } = require("../middleware/user.middleware.js");
 
-const { auth } = require("../middleware/auth.middleware");
+const { auth, authRefreshToken } = require("../middleware/auth.middleware");
 const userRoute = new Router({ prefix: "/user" });
 
 userRoute.post(
@@ -29,4 +30,5 @@ userRoute.patch("change", "/change", changePasswordVerify, userChangePassword);
 userRoute.get("userInfo", "/userInfo", auth, sendUserInfo);
 userRoute.patch("changeProfile", "/changeProfile", auth, changeProfile);
 userRoute.post("userInfoById", "/userInfoById", userInfoById);
+userRoute.post("updateToken", "/updateToken", authRefreshToken, updateToken);
 module.exports = userRoute;
