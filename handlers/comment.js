@@ -5,6 +5,36 @@ const {
 } = require("../constant/err.type");
 const { query } = require("../db/index");
 const { changeResKey } = require("../utils/resHandler");
+
+/**
+ *
+ * @param {*} ctx
+ * @description 添加代码评论
+ * @author jiabin
+ */
+exports.addCodeComment = async (ctx) => {
+  try {
+    const [total] = await query("select count(*) as total from comment");
+    const { cid, content, uid } = ctx.request.body;
+    await query("insert into comment set ?", {
+      content,
+      cid,
+      uid,
+      id: total.total + 1,
+      date: Date.now(),
+    });
+
+    ctx.body = {
+      code: 100,
+      msg: "success",
+      data: {},
+    };
+  } catch (e) {
+    console.error(e);
+    return ctx.app.emit("error", this.addCodeComment, ctx);
+  }
+};
+
 /**
  *
  * @param {*} ctx

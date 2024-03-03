@@ -200,8 +200,8 @@ exports.createCode = async (ctx) => {
     const raw = "http://localhost:3000/files/" + codeId + ".cpp";
     const newData = {
       title,
-      author,
-      uid,
+      author: author || "游客1",
+      uid: uid || 0,
       expiration,
       encrypt,
       exposure,
