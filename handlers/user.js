@@ -73,7 +73,7 @@ exports.userLogin = async (ctx) => {
       data: {
         token: jwt.sign(res, secretKey, { expiresIn: 30 }), //数字单位为 秒
         refreshToken: jwt.sign({ token: "myrefreshToken" }, refreshTokenKey, {
-          expiresIn: 60 * 60 * 24 * 15,
+          expiresIn: 60 * 60 * 24,
         }),
       },
     };
